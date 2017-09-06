@@ -1,5 +1,5 @@
-require_relative 'csvreader'
-require_relative 'csvclasscreator'
+require_relative 'csv_reader'
+require_relative 'csv_classcreator'
 require_relative 'exception'
 require 'csv'
 
