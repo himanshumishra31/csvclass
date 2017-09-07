@@ -3,9 +3,9 @@ class CsvClassCreator
     @klass = Class.new do
      @array_object = []
       class << self
-        attr_reader :array_object
+        attr_accessor :array_object
       end
-
+      attr_accessor :store_values
       define_method :initialize do
         @store_values = {}
         self.class.array_object << self
@@ -18,7 +18,7 @@ class CsvClassCreator
     @klass.class_eval do
       define_method :read_values_from_csv do |*row|
         row.each do |key,value|
-          @store_values[key] = value
+          store_values[key] = value
         end
       end
     end
@@ -27,7 +27,7 @@ class CsvClassCreator
   def create_method(data_array)
     data_array.headers.each do |method_name|
       @klass.class_eval do
-        define_method(method_name) { @store_values[method_name] }
+        define_method(method_name) { store_values[method_name] }
       end
     end
   end

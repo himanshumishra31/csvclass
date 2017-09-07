@@ -1,24 +1,26 @@
 class CsvReader
-  EXTENSION_REGEX = /(.csv)$/
-  INVALID_FILENAME = /\A[A-Z]/
-  FILE_WITH_NAME = /\s/
+  FILE_EXTENSION_VALIDATOR_REGEX = /(.csv)$/
+  FILENAME_UPPERCASE_VALIDATOR_REGEX = /\A[A-Z]/
+  FILENAME_SPACE_VALIDATOR_REGEX = /\s/
+  attr_accessor :classname, :data_array, :klass
+
   def initialize(pathname)
     @classname = File.basename(pathname,'.csv')
-    raise FileExtensionError, 'The file extension is not valid' unless EXTENSION_REGEX.match?(pathname)
-    raise FileNameError, 'File name does not start with uppercase letter' unless INVALID_FILENAME.match?(@classname)
-    raise FileNameError, 'File name contains space' if FILE_WITH_NAME.match?(@classname)
+    raise FileExtensionError, 'The file extension is not valid' unless FILE_EXTENSION_VALIDATOR_REGEX.match?(pathname)
+    raise FileNameError, 'File name does not start with uppercase letter' unless FILENAME_UPPERCASE_VALIDATOR_REGEX.match?(classname)
+    raise FileNameError, 'File name contains space' if FILENAME_SPACE_VALIDATOR_REGEX.match?(classname)
   end
 
   def execute
-    @csv_creator_obj = CsvClassCreator.new(@classname)
-    @data_array = csv_read
-    @csv_creator_obj.create_method_object(@data_array)
+    @klass = CsvClassCreator.new(classname)
+    @data_array = read
+    klass.create_method_object(data_array)
     display_values
   end
 
   def display_values
-    @csv_creator_obj.array_object.each do |obj_id|
-      @data_array.headers.each do |method_name|
+    klass.array_object.each do |obj_id|
+      data_array.headers.each do |method_name|
         puts "#{method_name} : #{obj_id.public_send(method_name)}"
       end
       puts "End of entry\n "
@@ -26,7 +28,7 @@ class CsvReader
     puts 'End of a csv file'
   end
 
-  def csv_read
+  def read
     CSV.read("#{@classname}.csv", headers: true)
   end
 end
