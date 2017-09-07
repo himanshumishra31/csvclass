@@ -7,7 +7,7 @@ class CsvClassCreator
       end
       attr_accessor :store_values
       define_method :initialize do
-        @store_values = {}
+        self.store_values = {}
         self.class.array_object << self
       end
     end

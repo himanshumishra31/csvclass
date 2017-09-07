@@ -5,15 +5,15 @@ class CsvReader
   attr_accessor :classname, :data_array, :klass
 
   def initialize(pathname)
-    @classname = File.basename(pathname,'.csv')
+    self.classname = File.basename(pathname,'.csv')
     raise FileExtensionError, 'The file extension is not valid' unless FILE_EXTENSION_VALIDATOR_REGEX.match?(pathname)
     raise FileNameError, 'File name does not start with uppercase letter' unless FILENAME_UPPERCASE_VALIDATOR_REGEX.match?(classname)
     raise FileNameError, 'File name contains space' if FILENAME_SPACE_VALIDATOR_REGEX.match?(classname)
   end
 
   def execute
-    @klass = CsvClassCreator.new(classname)
-    @data_array = read
+    self.klass = CsvClassCreator.new(classname)
+    self.data_array = read
     klass.create_method_object(data_array)
     display_values
   end
@@ -29,6 +29,6 @@ class CsvReader
   end
 
   def read
-    CSV.read("#{@classname}.csv", headers: true)
+    CSV.read("#{classname}.csv", headers: true)
   end
 end
